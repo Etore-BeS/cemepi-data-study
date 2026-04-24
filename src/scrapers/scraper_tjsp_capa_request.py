@@ -1,4 +1,4 @@
-import requests
+from curl_cffi import requests
 from bs4 import BeautifulSoup
 import re
 import pandas as pd
@@ -6,7 +6,7 @@ import time
 
 class FaceTJSPScraper:
     def __init__(self):
-        self.session = requests.Session()
+        self.session = requests.Session(impersonate="chrome120")
         self.session.headers.update({
             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
         })
@@ -181,7 +181,7 @@ class FaceTJSPScraper:
                 tds = mov.find_all("td")
                 if len(tds) >= 3:
                     data_mov = tds[0].get_text().strip()
-                    tipo_mov = tds[2].get_text().strip()
+                    tipo_mov = re.sub(r'\s+', ' ', tds[2].get_text()).strip() 
                     for pad in self.padrão_sentenças:
                         if re.search(pad, tipo_mov, re.IGNORECASE):
                             tipo_sentença.append(tipo_mov.split('\n')[0])
@@ -227,7 +227,6 @@ if __name__ == "__main__":
         else:
             lista_df.append((url, *["ERRO"]*15))
         
-        time.sleep(1) # Delay educado
 
     df = pd.DataFrame(lista_df, columns=[
         "URL", "F2_Processo", "F2_Classe", "F2_Assunto", "Outros Assuntos",
