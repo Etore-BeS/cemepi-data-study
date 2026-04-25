@@ -42,6 +42,12 @@ def executar_coleta():
         
         try:
             html = scraper.get_html(url)
+            
+            link_exato = scraper.resolve_multiple_results(html, num)
+            if link_exato:
+                url = link_exato  
+                html = scraper.get_html(url)  
+            
             resultado = scraper.parse_process(html)
             
             if resultado:

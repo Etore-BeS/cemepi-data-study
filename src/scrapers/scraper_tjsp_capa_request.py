@@ -97,6 +97,23 @@ class FaceTJSPScraper:
         except Exception as e:
             print(f"Erro ao acessar {url}: {e}")
             return None
+        
+    def resolve_multiple_results(self, html, target_number):
+        # Identifica se é uma tela de listagem e retorna a URL do processo exato.
+        soup = BeautifulSoup(html, "html.parser")
+        # Busca todos os links de processos na tabela de resultados
+        links = soup.find_all('a', class_='linkProcesso')
+        if not links:
+            links = soup.find_all('a', href=re.compile(r'show\.do\?processo\.codigo='))
+
+        for link in links:
+            texto_link = link.get_text().strip()
+            # Se o número exato estiver no texto do link, extrai a URL oculta
+            if target_number in texto_link:
+                href = link.get('href')
+                if href:
+                    return "https://esaj.tjsp.jus.br" + href
+        return None
 
     def parse_process(self, html):
         if not html:
