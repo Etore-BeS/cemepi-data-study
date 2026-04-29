@@ -2,7 +2,6 @@ from curl_cffi import requests
 from bs4 import BeautifulSoup
 import re
 import pandas as pd
-import time
 
 class FaceTJSPScraper:
     def __init__(self):

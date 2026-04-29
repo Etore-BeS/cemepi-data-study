@@ -4,6 +4,7 @@ import time
 import sys
 from pathlib import Path
 import pandas as pd
+import random
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.append(str(PROJECT_ROOT))
@@ -90,7 +91,7 @@ def executar_coleta():
             else:
                 print(f"[FALHA] HTML vazio ou erro de parsing: {num}")
             
-            time.sleep(2)
+            time.sleep(random.uniform(3.5, 7.2))
             
         except Exception as e:
             print(f"[ERRO] Processo {num}: {e}")
