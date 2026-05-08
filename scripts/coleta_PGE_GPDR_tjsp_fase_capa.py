@@ -12,6 +12,7 @@ sys.path.append(str(PROJECT_ROOT))
 from src.scrapers.scraper_tjsp_capa_request import FaceTJSPScraper
 
 INPUT_FILE = "data/PGE.GPDR.json"
+PENDENTES_FILE = "data/processos_pendentes.json"
 OUTPUT_FILE = "data/coleta_tjsp_resultados.csv"
 
 def carregar_ja_coletados():
@@ -27,7 +28,10 @@ def carregar_ja_coletados():
 def executar_coleta():
     scraper = FaceTJSPScraper()
     
-    with open(INPUT_FILE, 'r', encoding='utf-8') as f:
+    arquivo_alvo = PENDENTES_FILE if os.path.exists(PENDENTES_FILE) else INPUT_FILE
+    print(f"[*] Iniciando coleta a partir da base: {arquivo_alvo}")
+    
+    with open(arquivo_alvo, 'r', encoding='utf-8') as f:
         dados_base = json.load(f)
     
     ja_feitos = carregar_ja_coletados()
