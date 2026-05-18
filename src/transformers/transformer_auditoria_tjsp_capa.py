@@ -10,7 +10,7 @@ class AuditoriaPGE:
         self.pendentes_file = pendentes_file
 
     def remover_duplicados_csv(self):
-        """Lê o CSV, remove linhas duplicadas baseadas no número do processo e sobrescreve."""
+        # Lê o CSV, remove linhas duplicadas baseadas no número do processo e sobrescreve.
         if not self.output_csv.exists():
             return 0
         df = pd.read_csv(self.output_csv)
@@ -24,7 +24,7 @@ class AuditoriaPGE:
         return duplicatas_removidas
 
     def auditar_e_gerar_pendencias(self):
-        """Cruza a base JSON com o CSV e gera o arquivo de processos faltantes."""
+        # Cruza a base JSON com o CSV e gera o arquivo de processos faltantes.
         with open(self.input_json, 'r', encoding='utf-8') as f:
             dados_base = json.load(f)
         

@@ -7,7 +7,7 @@ class AggregatorGold:
         self.output_gold = output_gold
 
     def realizar_join_gold(self):
-        """Une as duas bases Silver usando processo_pk e expurga a chave temporária."""
+        # Une as duas bases Silver usando processo_pk e expurga a chave temporária.
         with open(self.silver_nossos, 'r', encoding='utf-8') as f:
             dados_nossos = json.load(f)
             

@@ -6,7 +6,7 @@ class TransformerSilverDadosIC:
         self.output_silver_ic = output_silver_ic
 
     def json_pge_para_silver(self):
-        """Lê os dados originais do IC e estrutura para a camada Silver."""
+        # Lê os dados originais do IC e estrutura para a camada Silver.
         with open(self.input_ic_json, 'r', encoding='utf-8') as f:
             dados_ic = json.load(f)
 

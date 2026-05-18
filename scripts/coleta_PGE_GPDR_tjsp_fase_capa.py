@@ -40,6 +40,8 @@ def executar_coleta():
 
     print(f"Total na base: {len(dados_base)} | Já coletados: {len(ja_feitos)} | Restantes: {len(a_processar)}")
 
+    total_atual = len(ja_feitos)
+
     for item in a_processar:
         num = item['Processo']
         
@@ -91,11 +93,12 @@ def executar_coleta():
                 
                 df_linha = pd.DataFrame([linha_dict])
                 df_linha.to_csv(OUTPUT_FILE, mode='a', index=False, header=not os.path.exists(OUTPUT_FILE))
-                print(f"[OK] Processo coletado: {num}")
+                total_atual += 1 
+                print(f"[OK] Processo coletado: {num}. Total já coletado: {total_atual}")
             else:
                 print(f"[FALHA] HTML vazio ou erro de parsing: {num}")
             
-            time.sleep(random.uniform(3.5, 7.2))
+            time.sleep(random.uniform(1.8, 2.7))
             
         except Exception as e:
             print(f"[ERRO] Processo {num}: {e}")

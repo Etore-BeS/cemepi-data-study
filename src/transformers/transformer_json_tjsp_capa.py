@@ -15,7 +15,7 @@ class TransformerSilverNossosDados:
         return str(valor).strip()
 
     def csv_para_json_bruto(self):
-        """Converte o CSV achatado para um JSON hierárquico primário."""
+        # Converte o CSV achatado para um JSON hierárquico primário.
         df = pd.read_csv(self.input_csv)
         dados = []
         
@@ -58,7 +58,7 @@ class TransformerSilverNossosDados:
         return len(dados)
 
     def json_bruto_para_silver(self):
-        """Converte o JSON bruto para a infraestrutura Silver (Formato do Professor)."""
+        # Converte o JSON bruto para a infraestrutura Silver (Formato do Professor).
         with open(self.output_json_bruto, 'r', encoding='utf-8') as f:
             dados = json.load(f)
 
