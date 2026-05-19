@@ -53,5 +53,5 @@ class AuditoriaPGE:
         with open(self.pendentes_file, 'w', encoding='utf-8') as f:
             json.dump(pendentes, f, ensure_ascii=False, indent=4)
 
-        return len(processos_esperados), len(set_coletados), len(pendentes)
+        return len(processos_esperados), len(set_coletados_limpo), len(pendentes)
     
