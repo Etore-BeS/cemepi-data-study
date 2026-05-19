@@ -1,4 +1,5 @@
 import json
+import re
 
 class TransformerSilverDadosIC:
     def __init__(self, input_ic_json, output_silver_ic):
@@ -12,8 +13,15 @@ class TransformerSilverDadosIC:
 
         silver_ic_docs = []
         for doc in dados_ic:
+            proc_bruto = str(doc.get("Processo", ""))
+            proc_limpo = re.sub(r'\D', '', proc_bruto)
+            
+            processo_mascarado = proc_bruto
+            if len(proc_limpo) == 20:
+                processo_mascarado = f"{proc_limpo[:7]}-{proc_limpo[7:9]}.{proc_limpo[9:13]}.{proc_limpo[13]}.{proc_limpo[14:16]}.{proc_limpo[16:]}"
+                
             silver_doc = {
-                "processo_pk": doc.get("Processo"), 
+                "processo_pk": processo_mascarado, 
                 "_id": doc.get("_id"),
                 "metadados": {
                     "pasta": doc.get("Pasta"),

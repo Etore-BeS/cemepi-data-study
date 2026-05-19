@@ -1,5 +1,6 @@
 import json
 import pandas as pd
+import re
 from collections import Counter
 from pathlib import Path
 
@@ -36,8 +37,18 @@ class AuditoriaPGE:
             df_coletado = pd.read_csv(self.output_csv, usecols=["Processo"])
             processos_coletados = df_coletado["Processo"].astype(str).tolist()
 
-        set_coletados = set(processos_coletados)
-        pendentes = [p for p in processos_esperados if p['Processo'] not in set_coletados]
+        # Normalização: Remove pontuações para a comparação dos processos
+        set_coletados_limpo = {re.sub(r'\D', '', str(p)) for p in processos_coletados}
+        
+        pendentes = []
+        for p in processos_esperados:
+            proc_str = str(p.get('Processo', ''))
+            proc_limpo = re.sub(r'\D', '', proc_str)
+            
+            if proc_limpo and proc_limpo not in set_coletados_limpo:
+                if len(proc_limpo) == 20:
+                    p['Processo'] = f"{proc_limpo[:7]}-{proc_limpo[7:9]}.{proc_limpo[9:13]}.{proc_limpo[13]}.{proc_limpo[14:16]}.{proc_limpo[16:]}"
+                pendentes.append(p)
 
         with open(self.pendentes_file, 'w', encoding='utf-8') as f:
             json.dump(pendentes, f, ensure_ascii=False, indent=4)

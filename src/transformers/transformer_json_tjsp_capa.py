@@ -85,7 +85,7 @@ class TransformerSilverNossosDados:
                 return None
 
             silver_doc = {
-                "processo_pk": doc.get("Processo"), 
+                "processo_pk": str(doc.get("Processo")).strip(), 
                 "processo": {
                     "numero": num_processo_limpo,
                     "classe": {"descricao": doc.get("Classe")},
