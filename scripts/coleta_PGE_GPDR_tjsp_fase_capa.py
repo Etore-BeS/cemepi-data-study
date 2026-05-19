@@ -5,6 +5,7 @@ import sys
 from pathlib import Path
 import pandas as pd
 import random
+import re
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.append(str(PROJECT_ROOT))
@@ -43,7 +44,13 @@ def executar_coleta():
     total_atual = len(ja_feitos)
 
     for item in a_processar:
-        num = item['Processo']
+        num_bruto = str(item.get('Processo', ''))
+        num_limpo = re.sub(r'\D', '', num_bruto)
+        
+        if len(num_limpo) == 20:
+            num = f"{num_limpo[:7]}-{num_limpo[7:9]}.{num_limpo[9:13]}.{num_limpo[13]}.{num_limpo[14:16]}.{num_limpo[16:]}"
+        else:
+            num = num_bruto
         
         url = f"https://esaj.tjsp.jus.br/cpopg/search.do?cbPesquisa=NUMPROC&dadosConsulta.valorConsulta={num}"
         
