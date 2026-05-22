@@ -1,6 +1,6 @@
 import json
 
-class AggregatorGold:
+class FacePGEGPDRAggregator:
     def __init__(self, silver_nossos, silver_ic, output_gold):
         self.silver_nossos = silver_nossos
         self.silver_ic = silver_ic

@@ -3,10 +3,10 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.append(str(PROJECT_ROOT))
 
-from src.transformers.transformer_json_tjsp_capa import TransformerSilverNossosDados
+from src.transformers.transformer_json_tjsp_capa import FaceTransformerSilverTJSP
 
 def run():
-    transformer = TransformerSilverNossosDados(
+    transformer = FaceTransformerSilverTJSP(
         input_csv=PROJECT_ROOT / "data" / "coleta_tjsp_resultados.csv",
         output_json_bruto=PROJECT_ROOT / "data" / "tjsp_dados_brutos.json",
         output_silver=PROJECT_ROOT / "data" / "silver_dados_capa_tjsp.json"

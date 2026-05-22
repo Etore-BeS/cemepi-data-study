@@ -3,10 +3,10 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.append(str(PROJECT_ROOT))
 
-from src.transformers.transformer_silver_PGE_GPDR import TransformerSilverDadosIC
+from src.transformers.transformer_silver_PGE_GPDR import PGE_GPDRTransformerSilver
 
 def run():
-    transformer = TransformerSilverDadosIC(
+    transformer = PGE_GPDRTransformerSilver(
         input_ic_json=PROJECT_ROOT / "data" / "PGE.GPDR.json",
         output_silver_ic=PROJECT_ROOT / "data" / "silver_dados_PGE_GPDR.json"
     )

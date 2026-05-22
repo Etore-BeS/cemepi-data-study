@@ -3,10 +3,10 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.append(str(PROJECT_ROOT))
 
-from src.transformers.transformer_auditoria_tjsp_capa import AuditoriaPGE
+from src.transformers.transformer_auditoria_tjsp_capa import FaceAuditoriaTJSP
 
 def run():
-    auditor = AuditoriaPGE(
+    auditor = FaceAuditoriaTJSP(
         input_json=PROJECT_ROOT / "data" / "PGE.GPDR.json",
         output_csv=PROJECT_ROOT / "data" / "coleta_tjsp_resultados.csv",
         pendentes_file=PROJECT_ROOT / "data" / "processos_pendentes.json"

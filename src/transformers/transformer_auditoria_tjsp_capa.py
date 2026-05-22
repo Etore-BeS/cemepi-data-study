@@ -4,7 +4,7 @@ import re
 from collections import Counter
 from pathlib import Path
 
-class AuditoriaPGE:
+class FaceAuditoriaTJSP:
     def __init__(self, input_json, output_csv, pendentes_file):
         self.input_json = input_json
         self.output_csv = output_csv

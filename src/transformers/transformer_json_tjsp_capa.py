@@ -3,7 +3,7 @@ import json
 import re
 from datetime import datetime
 
-class TransformerSilverNossosDados:
+class FaceTransformerSilverTJSP:
     def __init__(self, input_csv, output_json_bruto, output_silver):
         self.input_csv = input_csv
         self.output_json_bruto = output_json_bruto

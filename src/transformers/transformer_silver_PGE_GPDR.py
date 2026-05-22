@@ -1,7 +1,7 @@
 import json
 import re
 
-class TransformerSilverDadosIC:
+class PGE_GPDRTransformerSilver:
     def __init__(self, input_ic_json, output_silver_ic):
         self.input_ic_json = input_ic_json
         self.output_silver_ic = output_silver_ic
