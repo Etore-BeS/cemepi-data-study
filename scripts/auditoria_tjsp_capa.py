@@ -13,8 +13,9 @@ def run():
     )
     
     print("[*] Iniciando Auditoria e Sanidade de Dados (Bronze)")
-    dups = auditor.remover_duplicados_csv()
-    print(f"[-] Duplicatas limpas fisicamente do CSV: {dups}")
+    falhas, dups = auditor.auditar_limpar_csv()
+    print(f"[-] Processos corrompidos ('NÃO HÁ REGISTRO') expurgados do CSV: {falhas}")
+    print(f"[-] Duplicatas reais limpas fisicamente do CSV: {dups}")
     
     esperados, coletados, faltantes = auditor.auditar_e_gerar_pendencias()
     print(f"[-] Total Esperado: {esperados} | Coletados Únicos: {coletados} | Pendentes para coleta: {faltantes}")
