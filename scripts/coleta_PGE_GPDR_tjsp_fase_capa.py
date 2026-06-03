@@ -5,7 +5,6 @@ import sys
 from pathlib import Path
 import pandas as pd
 import random
-import re
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.append(str(PROJECT_ROOT))

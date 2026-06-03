@@ -1,7 +1,6 @@
 import json
 import pandas as pd
 import re
-import os
 from pathlib import Path
 
 class TransformerErrosDadosCapaBronze:

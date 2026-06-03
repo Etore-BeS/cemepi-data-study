@@ -1,7 +1,6 @@
 import json
 import pandas as pd
 import re
-from collections import Counter
 from pathlib import Path
 
 class FaceAuditoriaTJSP:
