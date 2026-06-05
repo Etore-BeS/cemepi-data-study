@@ -1,0 +1,8 @@
+site_name: Documentação TJSP Analytics
+theme:
+  name: material
+  palette:
+    primary: indigo
+    accent: blue
+
+docs_dir: notebooks
