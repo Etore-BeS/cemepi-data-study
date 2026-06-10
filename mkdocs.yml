@@ -1,5 +1,9 @@
-site_name: Documentação CEMEPI - Dados
+site_name: Documentação PGE GPDR - Similaridade
+theme:
+  name: material
+  palette:
+    primary: 'indigo'
+    accent: 'blue'
+    
+    docs_dir: notebooks
 
-nav:
-  - Home:
-    - index.md
