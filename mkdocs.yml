@@ -1,5 +1,14 @@
 site_name: Documentação CEMEPI - Dados
 
 nav:
-  - Home:
-    - index.md
+- Home: index.md
+- Notebooks:
+  - Template: notebooks/template_notebook.md
+  - "Exemplo: Similaridade": notebooks/estudo-similaridade.md
+- Módulos src:
+  - Template: src/template_src.md
+- Scripts:
+  - Template: scripts/template_script.md
+- Guias:
+  - Configuração do ambiente: guias/configuracao_ambiente.md
+  - Padrão de logging: guias/logging_padrao.md

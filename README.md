@@ -17,6 +17,8 @@ Projeto de estudo e análise de dados do CEMEPI utilizando Python, Jupyter Noteb
 ├── src/                       # Código fonte do projeto (módulos Python)
 ├── recursos/                  # Recursos auxiliares (imagens, documentos)
 │   └── tutoria-20260415/
+├── docs/                      # Documentação ADR (MkDocs)
+├── mkdocs.yml                # Configuração do site de documentação
 ├── pyproject.toml            # Configuração do projeto e dependências
 ├── .python-version           # Versão do Python (3.13)
 └── .gitignore               # Arquivos ignorados pelo Git
@@ -30,6 +32,7 @@ Projeto de estudo e análise de dados do CEMEPI utilizando Python, Jupyter Noteb
 | `notebooks/` | Notebooks Jupyter com análises exploratórias e experimentos.                                                                                    |
 | `scripts/`   | Scripts Python standalone para processamento, ETL, etc.                                                                                           |
 | `src/`       | Módulos Python reutilizáveis. Importe como `from src import modulo`.                                                                          |
+| `docs/`      | Documentação ADR do projeto (decisões, contexto, aprendizados). Visualize com `uv run mkdocs serve`.                                         |
 | `recursos/`  | Materiais de apoio, tutoriais, imagens, documentação.                                                                                           |
 
 ---
