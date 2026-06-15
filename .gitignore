@@ -12,3 +12,7 @@ wheels/
 
 # Dados 
 data/*
+
+# Logs e build de documentação
+logs/
+site/
