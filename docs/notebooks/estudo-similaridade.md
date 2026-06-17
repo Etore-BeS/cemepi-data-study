@@ -1,4 +1,4 @@
-# [Título do Notebook]
+# Estudo de Similaridade
 
 | Metadado            | Valor                                      |
 |---------------------|--------------------------------------------|
@@ -22,7 +22,7 @@ A base PGE GPDR possui uma coluna chamada Assuntos, responsável por armazenar o
 ## Resultados Alcançados
 
 *Quais foram os principais números ou achados?*  
-- Foram criados 10 agrupamentos diferentes para varia
+- Foram criados 10 agrupamentos diferentes para variáveis.
 - 47442 processos foram normalizados trocando termos variados por seu valor canônico .
 véis no Dicionário da Verdade.
 
@@ -34,7 +34,7 @@ véis no Dicionário da Verdade.
 
 ## Decisões Pendentes ou Encaminhamentos
 
-- [ ] Validar o dicionário final com o time de domínio (Beto/Étore).
+- [X] Validar o dicionário final com o time de domínio (Beto/Étore).
 - [ ] Automatizar o processo via script.
 
 ## Como reproduzir este estudo

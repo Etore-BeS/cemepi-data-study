@@ -5,5 +5,5 @@ theme:
     primary: 'indigo'
     accent: 'blue'
     
-    docs_dir: notebooks
+docs_dir: notebooks
 
