@@ -18,7 +18,7 @@ Esse script pega o número de todos esses processos da base enviada pela PGE (PG
 
 ## Decisões de Pipeline
 
-- **Fonte de dados:** `data/PGE.GPDR.json` (gerado pelo time da PGE)
+- **Fonte de dados:** site `e-SAJ` 
 - **Destino:** `data/coleta_tjsp_resultados.csv` (incremental, com checkpoint)
 - **Controle de repetição:** carrega processos já salvos a partir do CSV de saída – evita refazer coletas.
 - **Delay entre requisições:** `random.uniform(3.5, 7.2)` para não sobrecarregar o TJSP.
@@ -28,7 +28,7 @@ Esse script pega o número de todos esses processos da base enviada pela PGE (PG
 
 ```bash
 # A partir da raiz do projeto
-python scripts/coleta_PGE_GPDR_tjsp_fase_capa.py
+uv run python scripts/coleta_PGE_GPDR_tjsp_fase_capa.py
 ```
 
 ## Principais Parâmetros (constantes no código)
@@ -67,3 +67,14 @@ python scripts/coleta_PGE_GPDR_tjsp_fase_capa.py
 - O checkpoint por CSV é simples e eficaz; evita reprocessar centenas de itens após falha.
 - O uso de `pathlib` tornou o script portável entre Windows e Linux.
 - O uso da função `time.sleep` e a sua configuração como um valor `random` permite a coleta contínua dos dados durante um longo período de tempo sem erros de coleta e sem bloqueios.
+
+## Histórico de Modificações
+
+| Data       | Usuário          | Alteração |
+|------------|------------------|-----------|
+| 2026-04-24 | @alexandrehiero  | Criação do coleta TJSP capa |
+| 2026-04-25 | @alexandrehiero  | Criação do método para coletar os dados quando o site e-SAJ retornava mais de um resultado na pesquisa |
+| 2026-04-29 | @alexandrehiero  | Definição do time.sleep com a função random para a coleta |
+| 2026-06-05 | @alexandrehiero  | Criação da documentação do script |
+| 2026-06-15 | @alexandrehiero  | Atualização para formato ADR |
+| 2026-06-17 | @alexandrehiero  | Atualizações de erros na documentação |
