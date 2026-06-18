@@ -88,7 +88,7 @@ Estrutura do dicionário retornado por `parse_process()`:
 
 ## Testes e Validação
 
-Execução do orquestrador sobre a base completa, por @alexandrehiero: **273.237 processos**, dos quais **250 retornaram erro (~0,09%)** — taxa de sucesso de ~99,91%.
+Execução do orquestrador sobre a base completa, por @alexandrehiero: **273.327 processos**, dos quais **250 retornaram erro (~0,09%)** — taxa de sucesso de ~99,91%.
 
 ## Histórico de Modificações
 
