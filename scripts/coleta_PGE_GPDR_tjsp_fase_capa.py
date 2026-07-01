@@ -12,6 +12,7 @@ sys.path.append(str(PROJECT_ROOT))
 from src.scrapers.scraper_tjsp_capa_request import FaceTJSPScraper
 
 INPUT_FILE = "data/PGE.GPDR.json"
+PENDENTES_FILE = "data/processos_pendentes_final.json"
 OUTPUT_FILE = "data/coleta_tjsp_resultados.csv"
 
 def carregar_ja_coletados():
@@ -27,19 +28,33 @@ def carregar_ja_coletados():
 def executar_coleta():
     scraper = FaceTJSPScraper()
     
-    with open(INPUT_FILE, 'r', encoding='utf-8') as f:
+    arquivo_alvo = PENDENTES_FILE if os.path.exists(PENDENTES_FILE) else INPUT_FILE
+    print(f"[*] Iniciando coleta a partir da base: {arquivo_alvo}")
+    
+    with open(arquivo_alvo, 'r', encoding='utf-8') as f:
         dados_base = json.load(f)
     
     ja_feitos = carregar_ja_coletados()
     
-    a_processar = [p for p in dados_base if p.get('Processo') and p['Processo'] not in ja_feitos]
+    a_processar = [p for p in dados_base if p.get('Processo', p.get('processo_pk')) and p.get('Processo', p.get('processo_pk')) not in ja_feitos]
 
     print(f"Total na base: {len(dados_base)} | Já coletados: {len(ja_feitos)} | Restantes: {len(a_processar)}")
 
+    total_atual = len(ja_feitos)
+
     for item in a_processar:
-        num = item['Processo']
+        num = str(item.get('Processo', item.get('processo_pk', ''))).strip()
         
-        url = f"https://esaj.tjsp.jus.br/cpopg/search.do?cbPesquisa=NUMPROC&dadosConsulta.valorConsulta={num}"
+        base_busca = num.split('/')[0] if '/' in num else num
+        
+        if len(base_busca) == 25: 
+            num_digito_ano = base_busca[:15]
+            foro_num = base_busca[-4:]
+        else:
+            num_digito_ano = ""
+            foro_num = ""
+        
+        url = f"https://esaj.tjsp.jus.br/cpopg/search.do?conversationId=&cbPesquisa=NUMPROC&dadosConsulta.tipoNuProcesso=UNIFICADO&numeroDigitoAnoUnificado={num_digito_ano}&foroNumeroUnificado={foro_num}&dadosConsulta.valorConsultaNuUnificado={base_busca}&dadosConsulta.valorConsulta={base_busca}"
         
         try:
             html = scraper.get_html(url)
@@ -87,11 +102,12 @@ def executar_coleta():
                 
                 df_linha = pd.DataFrame([linha_dict])
                 df_linha.to_csv(OUTPUT_FILE, mode='a', index=False, header=not os.path.exists(OUTPUT_FILE))
-                print(f"[OK] Processo coletado: {num}")
+                total_atual += 1 
+                print(f"[OK] Processo coletado: {num}. Total já coletado: {total_atual}")
             else:
                 print(f"[FALHA] HTML vazio ou erro de parsing: {num}")
             
-            time.sleep(random.uniform(3.5, 7.2))
+            time.sleep(random.uniform(1.8, 2.7))
             
         except Exception as e:
             print(f"[ERRO] Processo {num}: {e}")
