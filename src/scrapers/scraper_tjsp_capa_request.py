@@ -98,20 +98,30 @@ class FaceTJSPScraper:
             return None
         
     def resolve_multiple_results(self, html, target_number):
-        # Identifica se é uma tela de listagem e retorna a URL do processo exato.
         soup = BeautifulSoup(html, "html.parser")
-        # Busca todos os links de processos na tabela de resultados
         links = soup.find_all('a', class_='linkProcesso')
         if not links:
             links = soup.find_all('a', href=re.compile(r'show\.do\?processo\.codigo='))
 
+        target_base = re.sub(r'\D', '', target_number.split('/')[0]) if '/' in target_number else re.sub(r'\D', '', target_number)
+        t_suf_digits = re.sub(r'\D', '', target_number.split('/')[1]) if '/' in target_number else ""
+        target_sufixo = str(int(t_suf_digits)) if t_suf_digits else ""
+
         for link in links:
             texto_link = link.get_text().strip()
-            # Se o número exato estiver no texto do link, extrai a URL oculta
+            
             if target_number in texto_link:
                 href = link.get('href')
-                if href:
-                    return "https://esaj.tjsp.jus.br" + href
+                if href: return "https://esaj.tjsp.jus.br" + href
+                
+            link_base = re.sub(r'\D', '', texto_link.split('/')[0]) if '/' in texto_link else re.sub(r'\D', '', texto_link)
+            l_suf_digits = re.sub(r'\D', '', texto_link.split('/')[1]) if '/' in texto_link else ""
+            link_sufixo = str(int(l_suf_digits)) if l_suf_digits else ""
+            
+            if target_base == link_base and target_sufixo == link_sufixo:
+                href = link.get('href')
+                if href: return "https://esaj.tjsp.jus.br" + href
+                
         return None
 
     def parse_process(self, html):
