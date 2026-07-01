@@ -7,6 +7,8 @@ nav:
   - "Exemplo: Similaridade": notebooks/estudo-similaridade.md
 - Módulos src:
   - Template: src/template_src.md
+  - Scrapers:
+    - Scraper TJSP fase capa: src/scrapers/scraper_tjsp_capa_request.md
 - Scripts:
   - Template: scripts/template_script.md
   - Docs:
