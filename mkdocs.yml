@@ -7,12 +7,25 @@ nav:
   - "Exemplo: Similaridade": notebooks/estudo-similaridade.md
 - Módulos src:
   - Template: src/template_src.md
+  - Aggregators:
+    - Aggregator TJSP dados capa e PGE.GPDR: src/aggregators/aggregator_tjsp_capa_PGE_GPDR.md
   - Scrapers:
     - Scraper TJSP fase capa: src/scrapers/scraper_tjsp_capa_request.md
+  - Transformers:
+    - Transformer JSON TJSP dados capa: src/transformers/transformer_json_tjsp_capa.md
+    - Transformer auditoria TJSP dados capa: src/transformers/transformer_auditoria_tjsp_capa.md
+    - Transformer erros dados capa bronze: src/transformers/transformer_erros_dados_capa_bronze.md
+    - Transformer silver dados PGE.GPDR: src/transformers/transformer_silver_PGE_GPDR.md
 - Scripts:
   - Template: scripts/template_script.md
   - Docs:
     - Pipeline Scraper TJSP fase capa: scripts/coleta_PGE_GPDR_tjsp_fase_capa.md
+    - Auditoria erros TJSP fase capa : scripts/auditoria_tjsp_capa.md
+    - Script Bronze para Silver TJSP dados capa : scripts/silver_tjsp_capa.md
+    - Script Bronze para Silver dados PGE.GPDR: scripts/silver_PGE_GPDR.md
+    - Script junção TJSP dados capa e dados PGE.GPDR : scripts/enriquecedor_tjsp_capa_PGE_GPDR.md
+    - Script merge erro dados TJSP : scripts/auditoria_merge_erros_dados_capa_bronze.md
 - Guias:
   - Configuração do ambiente: guias/configuracao_ambiente.md
   - Padrão de logging: guias/logging_padrao.md
+  

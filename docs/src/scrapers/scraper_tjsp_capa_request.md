@@ -62,9 +62,9 @@ if link:
 dados = scraper.parse_process(html)
 ```
 
-Estrutura do dicionário retornado por `parse_process()`:
-
 ```python
+# Estrutura do dicionário retornado por `parse_process()`:
+
 {
     "numero": "0000000-00.0000.0.00.0000",
     "classe": "Procedimento Comum Cível",

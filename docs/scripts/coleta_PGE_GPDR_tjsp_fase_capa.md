@@ -1,33 +1,28 @@
-# Coleta de Dados de Capa - TJSP (PGE GPDR)
+# Coleta PGE GPDR TJSP Capa – `scripts/coleta_PGE_GPDR_tjsp_fase_capa.py`
 
-# `scripts/coleta_PGE_GPDR_tjsp_fase_capa.py`
-
-| Metadado            | Valor                                      |
-|---------------------|--------------------------------------------|
-| Data de criação     | 2026-04-15                                 |
-| Data de atualização | 2026-04-29                                 |
-| Responsável(is)     | @alexandrehiero                            |
-| Dependências principais | `pandas`, `curl_cffi` (via módulo em src)  |
+| Metadado                | Valor                |
+|-------------------------|----------------------|
+| Data de criação         | 2026-04-15           |
+| Data de atualização     | 2026-07-03           |
+| Responsável(is)         | @alexandrehiero      |
+| Dependências principais | `pandas`, `json`, `pathlib`, `FaceTJSPScraper`   |
 
 ## Contexto e Motivação
 
-*Qual pipeline esse script executa? Por que ele é necessário?*
-O projeto possui uma base de dados interna (PGE GPDR) contendo 273.327 processos. Ele foi necessário para se coletar dos metadados de capa desses processos no site público do e-SAJ para posterior enriquecimento da base interna pré-existente. 
-
-Esse script pega o número de todos esses processos da base enviada pela PGE (PGE GPDR), compara com a lista "df_existente" chamada pela função "carregar_ja_coletados" que contêm os números dos processos já coletados e, a partir disso, faz-se a coleta dos que ainda não foram coletados buscando esses processos no site do e-SAJ, e os direcionando para a base já existente em "coleta_tjsp_resultados.csv".
+Este script é o **Orquestrador de Coleta** da camada Bronze. O projeto possui uma base de dados da PGE (Procuradoria Geral do Estado) contendo 273327 mil processos. Este script é responsável por varrer uma fila de processos, acionar o *Scraper* `scraper_tjsp_capa_request.py` (módulo `src`) para extrair os metadados da capa de cada processo diretamente do site público do e-SAJ (TJSP) e salvar os resultados de forma contínua e incremental. Ele é vital para o enriquecimento da base interna.
 
 ## Decisões de Pipeline
 
-- **Fonte de dados:** site `e-SAJ` 
-- **Destino:** `data/coleta_tjsp_resultados.csv` (incremental, com checkpoint)
-- **Controle de repetição:** carrega processos já salvos a partir do CSV de saída – evita refazer coletas.
-- **Delay entre requisições:** `random.uniform(3.5, 7.2)` para não sobrecarregar o TJSP.
-- **Tratamento de múltiplos resultados:** utiliza método `resolve_multiple_results` do scraper.
+- **Fonte de dados dinâmica (Fila de Repescagem):** O script implementa uma lógica de fallback inteligente. Ele busca primeiro o arquivo `data/processos_pendentes_final.json`. Se não existir, recorre ao arquivo `data/PGE.GPDR.json`. Isso permite que o script seja reexecutado para focar apenas nos processos que falharam em etapas anteriores.
+- **Destino Incremental:** O resultado é gravado em `data/coleta_tjsp_resultados.csv` utilizando `mode='a'` (Append). A memória não é sobrecarregada, pois as linhas são injetadas no disco a cada iteração bem-sucedida.
+- **Controle de Idempotência (Checkpoint):** A função `carregar_ja_coletados()` lê o CSV de saída, extrai a coluna `"Processo"` e monta um `set()` em memória. Os processos já existentes são filtrados da lista de execução. Se o script for interrompido, ele recomeçará exatamente de onde parou.
+- **Delay (Throttling):** Utiliza-se `time.sleep(random.uniform(1.8, 2.7))` para inserir uma pausa randômica entre requisições. Isso simula comportamento humano e evita bloqueios (Rate Limit ou mitigação de DDoS) por parte do firewall do TJSP.
+- **Construção de URL Dinâmica:** Para evitar ambiguidades na busca do e-SAJ, o código fatora o número do processo (quando possui 25 caracteres), extraindo `num_digito_ano` e `foro_num` para compor uma URL de consulta parametrizada com precisão.
 
 ## Como Executar
 
 ```bash
-# A partir da raiz do projeto
+# A partir da raiz do projeto, utilizando o gerenciador de pacotes uv
 uv run python scripts/coleta_PGE_GPDR_tjsp_fase_capa.py
 ```
 
@@ -36,37 +31,42 @@ uv run python scripts/coleta_PGE_GPDR_tjsp_fase_capa.py
 | Constante | Valor | Descrição |
 |-----------|-------|-------------|
 | `INPUT_FILE` | `data/PGE.GPDR.json` | Arquivo com a lista de processos |
-| `OUTPUT_FILE` | `data/coleta_tjsp_resultados.csv` | Resultados incrementais |
-| `SLEEP_RANGE` | `3.5, 7.2` | Intervalo aleatório entre chamadas |
+| `PENDENTES_FILE` | `data/processos_pendentes_final.json` | Fila prioritária de repescagem. |
+| `OUTPUT_FILE` | `data/coleta_tjsp_resultados.csv` | Arquivo de destino (incremental). |
+| `SLEEP_RANGE` | `1.8, 2.7` | Intervalo aleatório entre chamadas |
 
 ## Logs e Monitoramento
 
-- Logs são escritos no console e em `logs/coleta.log` (configurar `logging.basicConfig`).
-- Em caso de interrupção (`Ctrl+C`), o script finaliza graciosamente e os processos já coletados permanecem no CSV.
+- O monitoramento é feito em tempo real via terminal (stdout), emitindo mensagens claras de estado:
+  - `[OK]` para coleta bem-sucedida com contagem total.
+  - `[FALHA]` caso a página esteja vazia ou o parser falhe.
+  - `[ERRO]` capturando exceções (catch Exception) para que o script não crashe.
 
 ## Falhas Conhecidas e Workarounds
 
-- **Problema:** Processos com número muito antigo ou processos de outros tribunais retornam página vazia no e-SAJ.  
-  **Workaround:** O script registra `[FALHA]`, e registra o processo com os metadados como "NÃO HÁ REGISTRO" e continua.
-- **Problema:** O TJSP pode devolver captcha após muitas requisições.  
-  **Workaround:** Não implementado – é necessário reiniciar manualmente após pausa.
+- **Problema**: Processos com números anômalos/antigos retornam páginas vazias ou falham no parseamento do HTML.
+  **Workaround**: O orquestrador loga [FALHA] e usa a instrução continue para seguir para o próximo registro da fila sem escrever lixo estrutural no CSV. Esses processos serão identificados posteriormente pelo Transformer de Auditoria.
+
+- **Problema**: O e-SAJ pode devolver desafios (Captchas) após tráfego anômalo.
+  **Workaround**: Não implementado nativamente no script. Requer intervenção manual: parar o script, aguardar o cooldown do IP e reiniciar (o checkpoint evita perda de progresso).
 
 ## Decisões Futuras
 
 - [ ] Implementar retry com backoff exponencial (biblioteca `tenacity`).
 - [ ] Enviar notificação ao Telegram ao final da coleta.
-- [ ] Paralelizar com `asyncio` para ganho de performance (cuidado com bloqueio).
+- [ ] Adicionar rotação de IPs ou proxies caso o tempo de cooldown prejudique o cronograma da pesquisa.
 
 ## Relação com Outros Artefatos
 
 - Depende do módulo `src/scrapers/scraper_tjsp_capa_request.py`.
-- Alimenta a base normalizada ("coleta_tjsp_resultados.csv").
+- Alimenta: O arquivo bruto `coleta_tjsp_resultados.csv`, que posteriormente é consumido pelas classes de Transformers (limpeza e estruturação).
 
 ## Lições Aprendidas
 
 - O checkpoint por CSV é simples e eficaz; evita reprocessar centenas de itens após falha.
 - O uso de `pathlib` tornou o script portável entre Windows e Linux.
-- O uso da função `time.sleep` e a sua configuração como um valor `random` permite a coleta contínua dos dados durante um longo período de tempo sem erros de coleta e sem bloqueios.
+- O uso da função time.sleep com valores randômicos permitiu a coleta contínua de um altíssimo volume de dados ao longo do tempo sem engatilhar os sistemas de defesa anti-bot do tribunal.
+- A lógica de priorização de fila (arquivo_alvo = PENDENTES_FILE if os.path.exists...) desacoplou a necessidade de criar scripts diferentes para a rodada inicial e para a repescagem.
 
 ## Histórico de Modificações
 
@@ -78,3 +78,4 @@ uv run python scripts/coleta_PGE_GPDR_tjsp_fase_capa.py
 | 2026-06-05 | @alexandrehiero  | Criação da documentação do script |
 | 2026-06-15 | @alexandrehiero  | Atualização para formato ADR |
 | 2026-06-17 | @alexandrehiero  | Atualizações de erros na documentação |
+| 2026-07-03 | @alexandrehiero  | Revisão arquitetural da documentação para refletir fila de repescagem, tempos reais de delay e comportamento de falhas (Code vs. Docs). |
